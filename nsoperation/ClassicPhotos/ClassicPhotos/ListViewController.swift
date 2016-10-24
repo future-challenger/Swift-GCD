@@ -143,7 +143,7 @@ class ListViewController: UITableViewController {
   }
   
   func startDownloadforRecord(_ photoDetails: PhotoRecord, indexPath: IndexPath) {
-    if let downloadOperation = pendingOperations.downloadInProgress[indexPath] {
+    if pendingOperations.downloadInProgress[indexPath] != nil {
       return
     }
     
@@ -170,7 +170,7 @@ class ListViewController: UITableViewController {
   
   func startFiltrationForRecord(_ photoDetails: PhotoRecord, indexPath: IndexPath) {
     
-    if let filterOperation = pendingOperations.filtrationsInProgress[indexPath] {
+    if pendingOperations.filtrationsInProgress[indexPath] != nil {
       return
     }
     
