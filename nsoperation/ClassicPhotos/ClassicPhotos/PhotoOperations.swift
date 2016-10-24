@@ -47,7 +47,6 @@ class PendingOperations {
     queue.maxConcurrentOperationCount = 1
     return queue
   }()
-  
 }
 
 //Operation for downloading
