@@ -35,6 +35,7 @@ DispatchQueue.global(qos: .userInitiated).async {
 ```
 
 ###Dispatch After & Once
+####Dispatch After
 before you do dispatch after like this:
 ```swift
 var dispatchTime: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
@@ -55,3 +56,37 @@ DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
     // your function here
 }
 ```
+
+####Disaptch Once
+This `dispatch_once` on longer exists in Swift 3.0.
+
+According to Apple's migration guide:
+```
+The free function dispatch_once is no longer available in Swift. In Swift, you can use lazily initialized globals or static properties and get the same thread-safety and called-once guarantees as dispatch_once provided.
+```
+You can use lazy initialized global or static properties instead of dispatch once. eg:
+```swift
+// global constant: SomeClass initializer gets called lazily, only on first use
+let foo = SomeClass()
+
+// global var, same thing happens here
+// even though the "initializer" is an immediately invoked closure
+var bar: SomeClass = {
+    let b = SomeClass()
+    b.someProperty = "whatever"
+    b.doSomeStuff()
+    return b
+}()
+
+// ditto for static properties in classes/structures/enums
+class MyClass {
+    static let singleton = MyClass()
+    init() {
+        print("foo")
+    }
+}
+```
+
+reference:
+http://stackoverflow.com/questions/37801407/whither-dispatch-once-in-swift-3
+http://stackoverflow.com/questions/37801436/how-do-i-write-dispatch-after-gcd-in-swift-3
