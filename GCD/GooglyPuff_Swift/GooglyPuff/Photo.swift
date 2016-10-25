@@ -9,13 +9,13 @@
 import AssetsLibrary
 import UIKit
 
-typealias PhotoDownloadCompletionBlock = (image: UIImage?, error: NSError?) -> Void
-typealias PhotoDownloadProgressBlock = (completed: Int, total: Int) -> Void
+typealias PhotoDownloadCompletionBlock = (_ image: UIImage?, _ error: NSError?) -> Void
+typealias PhotoDownloadProgressBlock = (_ completed: Int, _ total: Int) -> Void
 
 enum PhotoStatus {
-  case Downloading
-  case GoodToGo
-  case Failed
+  case downloading
+  case goodToGo
+  case failed
 }
 
 protocol Photo {
@@ -26,16 +26,16 @@ protocol Photo {
 
 class AssetPhoto: Photo {
   var status: PhotoStatus {
-    return .GoodToGo
+    return .goodToGo
   }
 
   var image: UIImage? {
     let representation = asset.defaultRepresentation()
-    return UIImage(CGImage: representation.fullScreenImage().takeUnretainedValue())
+    return UIImage(cgImage: (representation?.fullScreenImage().takeUnretainedValue())!)
   }
   
   var thumbnail: UIImage? {
-    return UIImage(CGImage: asset.thumbnail().takeUnretainedValue())
+    return UIImage(cgImage: asset.thumbnail().takeUnretainedValue())
   }
 
   let asset: ALAsset
@@ -45,45 +45,45 @@ class AssetPhoto: Photo {
   }
 }
 
-private let downloadSession = NSURLSession(configuration: NSURLSessionConfiguration.ephemeralSessionConfiguration())
+private let downloadSession = URLSession(configuration: URLSessionConfiguration.ephemeral)
 
 class DownloadPhoto: Photo {
-  var status: PhotoStatus = .Downloading
+  var status: PhotoStatus = .downloading
   var image: UIImage?
   var thumbnail: UIImage?
 
-  let url: NSURL
+  let url: URL
 
-  init(url: NSURL, completion: PhotoDownloadCompletionBlock!) {
+  init(url: URL, completion: PhotoDownloadCompletionBlock!) {
     self.url = url
     downloadImage(completion)
   }
 
-  convenience init(url: NSURL) {
+  convenience init(url: URL) {
     self.init(url: url, completion: nil)
   }
 
-  func downloadImage(completion: PhotoDownloadCompletionBlock?) {
-    let task = downloadSession.dataTaskWithURL(url, completionHandler: {
+  func downloadImage(_ completion: PhotoDownloadCompletionBlock?) {
+    let task = downloadSession.dataTask(with: url, completionHandler: {
       data, response, error in
-      self.image = UIImage(data: data)
+      self.image = UIImage(data: data!)
       if error == nil && self.image != nil {
-        self.status = .GoodToGo
+        self.status = .goodToGo
       } else {
-        self.status = .Failed
+        self.status = .failed
       }
 
       self.thumbnail = self.image?.thumbnailImage(64,
         transparentBorder: 0,
         cornerRadius: 0,
-        interpolationQuality: kCGInterpolationDefault)
+        interpolationQuality: CGInterpolationQuality.default)
 
       if let completion = completion {
-        completion(image: self.image, error: error)
+        completion(self.image, error as NSError?)
       }
 
-      dispatch_async(dispatch_get_main_queue()) {
-        NSNotificationCenter.defaultCenter().postNotificationName(PhotoManagerContentUpdateNotification, object: nil)
+      DispatchQueue.main.async {
+        NotificationCenter.default.post(name: Notification.Name(rawValue: PhotoManagerContentUpdateNotification), object: nil)
       }
     })
 

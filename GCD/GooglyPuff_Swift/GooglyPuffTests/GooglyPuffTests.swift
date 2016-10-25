@@ -35,7 +35,7 @@ class GooglyPuffTests: XCTestCase {
     downloadImageURLWithString(OverlyAttachedGirlfriendURLString)
   }
 
-  func downloadImageURLWithString(urlString: String) {
+  func downloadImageURLWithString(_ urlString: String) {
     XCTFail("Not implemented!")
   }
 

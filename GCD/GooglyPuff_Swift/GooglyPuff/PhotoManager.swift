@@ -13,8 +13,8 @@ let PhotoManagerAddedContentNotification = "com.raywenderlich.GooglyPuff.PhotoMa
 /// Notification when content updates (i.e. Download finishes)
 let PhotoManagerContentUpdateNotification = "com.raywenderlich.GooglyPuff.PhotoManagerContentUpdate"
 
-typealias PhotoProcessingProgressClosure = (completionPercentage: CGFloat) -> Void
-typealias BatchPhotoDownloadingCompletionClosure = (error: NSError?) -> Void
+typealias PhotoProcessingProgressClosure = (_ completionPercentage: CGFloat) -> Void
+typealias BatchPhotoDownloadingCompletionClosure = (_ error: NSError?) -> Void
 
 private let _sharedManager = PhotoManager()
 
@@ -23,33 +23,33 @@ class PhotoManager {
     return _sharedManager
   }
 
-  private var _photos: [Photo] = []
+  fileprivate var _photos: [Photo] = []
   var photos: [Photo] {
     var photosCopy: [Photo]!
-    dispatch_sync(concurrentPhotoQueue) { // 1
+    concurrentPhotoQueue.sync { // 1
       photosCopy = self._photos // 2
     }
     return photosCopy
   }
 
-  private let concurrentPhotoQueue = dispatch_queue_create(
-    "com.raywenderlich.GooglyPuff.photoQueue", DISPATCH_QUEUE_CONCURRENT)
+  fileprivate let concurrentPhotoQueue = DispatchQueue(
+    label: "com.raywenderlich.GooglyPuff.photoQueue", attributes: DispatchQueue.Attributes.concurrent)
 
-  func addPhoto(photo: Photo) {
-    dispatch_barrier_async(concurrentPhotoQueue) { // 1
+  func addPhoto(_ photo: Photo) {
+    concurrentPhotoQueue.async(flags: .barrier, execute: { // 1
       self._photos.append(photo) // 2
-      dispatch_async(GlobalMainQueue) { // 3
+      GlobalMainQueue.async { // 3
         self.postContentAddedNotification()
       }
-    }
+    }) 
   }
 
-  func downloadPhotosWithCompletion(completion: BatchPhotoDownloadingCompletionClosure?) {
+  func downloadPhotosWithCompletion(_ completion: BatchPhotoDownloadingCompletionClosure?) {
     var storedError: NSError?
     for address in [OverlyAttachedGirlfriendURLString,
                     SuccessKidURLString,
                     LotsOfFacesURLString] {
-      let url = NSURL(string: address)
+      let url = URL(string: address)
       let photo = DownloadPhoto(url: url!) {
         image, error in
         if error != nil {
@@ -60,11 +60,11 @@ class PhotoManager {
     }
 
     if let completion = completion {
-      completion(error: storedError)
+      completion(storedError)
     }
   }
 
-  private func postContentAddedNotification() {
-    NSNotificationCenter.defaultCenter().postNotificationName(PhotoManagerAddedContentNotification, object: nil)
+  fileprivate func postContentAddedNotification() {
+    NotificationCenter.default.post(name: Notification.Name(rawValue: PhotoManagerAddedContentNotification), object: nil)
   }
 }

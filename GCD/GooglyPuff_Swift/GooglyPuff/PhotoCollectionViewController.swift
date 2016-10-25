@@ -14,10 +14,10 @@ private let BackgroundImageOpacity: CGFloat = 0.1
 class PhotoCollectionViewController: UICollectionViewController
 {
   var library: ALAssetsLibrary!
-  private var popController: UIPopoverController!
+  fileprivate var popController: UIPopoverController!
 
-  private var contentUpdateObserver: NSObjectProtocol!
-  private var addedContentObserver: NSObjectProtocol!
+  fileprivate var contentUpdateObserver: NSObjectProtocol!
+  fileprivate var addedContentObserver: NSObjectProtocol!
 
   // MARK: - Lifecycle
 
@@ -28,28 +28,28 @@ class PhotoCollectionViewController: UICollectionViewController
     // Background image setup
     let backgroundImageView = UIImageView(image: UIImage(named:"background"))
     backgroundImageView.alpha = BackgroundImageOpacity
-    backgroundImageView.contentMode = .Center
+    backgroundImageView.contentMode = .center
     collectionView?.backgroundView = backgroundImageView
 
-    contentUpdateObserver = NSNotificationCenter.defaultCenter().addObserverForName(PhotoManagerContentUpdateNotification,
+    contentUpdateObserver = NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: PhotoManagerContentUpdateNotification),
       object: nil,
-      queue: NSOperationQueue.mainQueue()) { notification in
+      queue: OperationQueue.main) { notification in
         self.contentChangedNotification(notification)
     }
-    addedContentObserver = NSNotificationCenter.defaultCenter().addObserverForName(PhotoManagerAddedContentNotification,
+    addedContentObserver = NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: PhotoManagerAddedContentNotification),
       object: nil,
-      queue: NSOperationQueue.mainQueue()) { notification in
+      queue: OperationQueue.main) { notification in
         self.contentChangedNotification(notification)
     }
   }
 
-  override func viewDidAppear(animated: Bool) {
+  override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     showOrHideNavPrompt()
   }
 
   deinit {
-    let nc = NSNotificationCenter.defaultCenter()
+    let nc = NotificationCenter.default
     if contentUpdateObserver != nil {
       nc.removeObserver(contentUpdateObserver)
     }
@@ -63,24 +63,24 @@ class PhotoCollectionViewController: UICollectionViewController
 
 private let PhotoCollectionCellID = "photoCell"
 
-extension PhotoCollectionViewController: UICollectionViewDataSource {
-  override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+extension PhotoCollectionViewController {
+  override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return PhotoManager.sharedManager.photos.count
   }
 
-  override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCellWithReuseIdentifier(PhotoCollectionCellID, forIndexPath: indexPath) as! UICollectionViewCell
+  override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PhotoCollectionCellID, for: indexPath) 
 
     let imageView = cell.viewWithTag(CellImageViewTag) as! UIImageView
     let photoAssets = PhotoManager.sharedManager.photos
-    let photo = photoAssets[indexPath.row]
+    let photo = photoAssets[(indexPath as NSIndexPath).row]
 
     switch photo.status {
-    case .GoodToGo:
+    case .goodToGo:
       imageView.image = photo.thumbnail
-    case .Downloading:
+    case .downloading:
       imageView.image = UIImage(named: "photoDownloading")
-    case .Failed:
+    case .failed:
       imageView.image = UIImage(named: "photoDownloadError")
     }
 
@@ -90,32 +90,32 @@ extension PhotoCollectionViewController: UICollectionViewDataSource {
 
 // MARK: - UICollectionViewDelegate
 
-extension PhotoCollectionViewController: UICollectionViewDelegate {
-  override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+extension PhotoCollectionViewController {
+  override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     let photos = PhotoManager.sharedManager.photos
-    let photo = photos[indexPath.row]
+    let photo = photos[(indexPath as NSIndexPath).row]
 
     switch photo.status {
-    case .GoodToGo:
-      let detailController = storyboard?.instantiateViewControllerWithIdentifier("PhotoDetailViewController") as? PhotoDetailViewController
+    case .goodToGo:
+      let detailController = storyboard?.instantiateViewController(withIdentifier: "PhotoDetailViewController") as? PhotoDetailViewController
       if let detailController = detailController {
         detailController.image = photo.image
         navigationController?.pushViewController(detailController, animated: true)
       }
 
-    case .Downloading:
+    case .downloading:
       let alert = UIAlertController(title: "Downloading",
         message: "The image is currently downloading",
-        preferredStyle: .Alert)
-      alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-      presentViewController(alert, animated: true, completion: nil)
+        preferredStyle: .alert)
+      alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+      present(alert, animated: true, completion: nil)
 
-    case .Failed:
+    case .failed:
       let alert = UIAlertController(title: "Image Failed",
         message: "The image failed to be created",
-        preferredStyle: .Alert)
-      alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-      presentViewController(alert, animated: true, completion: nil)
+        preferredStyle: .alert)
+      alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+      present(alert, animated: true, completion: nil)
     }
   }
 }
@@ -123,35 +123,35 @@ extension PhotoCollectionViewController: UICollectionViewDelegate {
 // MARK: - ELCImagePickerControllerDelegate
 
 extension PhotoCollectionViewController: ELCImagePickerControllerDelegate {
-  func elcImagePickerController(picker: ELCImagePickerController!, didFinishPickingMediaWithInfo info: [AnyObject]!) {
+  public func elcImagePickerController(_ picker: ELCImagePickerController!, didFinishPickingMediaWithInfo info: [Any]!) {
     for dictionary in info as! [NSDictionary] {
-      library.assetForURL(dictionary[UIImagePickerControllerReferenceURL] as! NSURL, resultBlock: {
+      library.asset(for: dictionary[UIImagePickerControllerReferenceURL] as! URL, resultBlock: {
         asset in
-        let photo = AssetPhoto(asset: asset)
+        let photo = AssetPhoto(asset: asset!)
         PhotoManager.sharedManager.addPhoto(photo)
       },
       failureBlock: {
         error in
         let alert = UIAlertController(title: "Permission Denied",
           message: "To access your photos, please change the permissions in Settings",
-          preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
+          preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
       })
     }
 
     if Utils.userInterfaceIdiomIsPad {
-      popController?.dismissPopoverAnimated(true)
+      popController?.dismiss(animated: true)
     } else {
-      dismissViewControllerAnimated(true, completion: nil)
+      dismiss(animated: true, completion: nil)
     }
   }
 
-  func elcImagePickerControllerDidCancel(picker: ELCImagePickerController!) {
+  func elcImagePickerControllerDidCancel(_ picker: ELCImagePickerController!) {
     if Utils.userInterfaceIdiomIsPad {
-      popController?.dismissPopoverAnimated(true)
+      popController?.dismiss(animated: true)
     } else {
-      dismissViewControllerAnimated(true, completion: nil)
+      dismiss(animated: true, completion: nil)
     }
   }
 }
@@ -160,38 +160,38 @@ extension PhotoCollectionViewController: ELCImagePickerControllerDelegate {
 
 extension PhotoCollectionViewController {
   // The upper right UIBarButtonItem method
-  @IBAction func addPhotoAssets(sender: AnyObject!) {
+  @IBAction func addPhotoAssets(_ sender: AnyObject!) {
     // Close popover if it is visible
-    if popController?.popoverVisible == true {
-      popController.dismissPopoverAnimated(true)
+    if popController?.isPopoverVisible == true {
+      popController.dismiss(animated: true)
       popController = nil
       return
     }
 
-    let alert = UIAlertController(title: "Get Photos From:", message: nil, preferredStyle: .ActionSheet)
+    let alert = UIAlertController(title: "Get Photos From:", message: nil, preferredStyle: .actionSheet)
 
     // Cancel button
-    let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
     alert.addAction(cancelAction)
 
     // Photo library button
-    let libraryAction = UIAlertAction(title: "Photo Library", style: .Default) {
+    let libraryAction = UIAlertAction(title: "Photo Library", style: .default) {
       action in
       let imagePickerController = ELCImagePickerController()
       imagePickerController.imagePickerDelegate = self
 
       if Utils.userInterfaceIdiomIsPad {
-        self.popController.dismissPopoverAnimated(true)
+        self.popController.dismiss(animated: true)
         self.popController = UIPopoverController(contentViewController: imagePickerController)
-        self.popController.presentPopoverFromBarButtonItem(self.navigationItem.rightBarButtonItem!, permittedArrowDirections: .Any, animated: true)
+        self.popController.present(from: self.navigationItem.rightBarButtonItem!, permittedArrowDirections: .any, animated: true)
       } else {
-        self.presentViewController(imagePickerController, animated: true, completion: nil)
+        self.present(imagePickerController, animated: true, completion: nil)
       }
     }
     alert.addAction(libraryAction)
 
     // Internet button
-    let internetAction = UIAlertAction(title: "Le Internet", style: .Default) {
+    let internetAction = UIAlertAction(title: "Le Internet", style: .default) {
       action in
       self.downloadImageAssets()
     }
@@ -199,9 +199,9 @@ extension PhotoCollectionViewController {
 
     if Utils.userInterfaceIdiomIsPad {
       popController = UIPopoverController(contentViewController: alert)
-      popController.presentPopoverFromBarButtonItem(navigationItem.rightBarButtonItem!, permittedArrowDirections: .Any, animated: true)
+      popController.present(from: navigationItem.rightBarButtonItem!, permittedArrowDirections: .any, animated: true)
     } else {
-      presentViewController(alert, animated: true, completion: nil)
+      present(alert, animated: true, completion: nil)
     }
   }
 }
@@ -209,16 +209,15 @@ extension PhotoCollectionViewController {
 // MARK: - Private Methods
 
 private extension PhotoCollectionViewController {
-  func contentChangedNotification(notification: NSNotification!) {
+  func contentChangedNotification(_ notification: Notification!) {
     collectionView?.reloadData()
     showOrHideNavPrompt();
   }
 
   func showOrHideNavPrompt() {
     let delayInSeconds = 1.0
-    let popTime = dispatch_time(DISPATCH_TIME_NOW,
-      Int64(delayInSeconds * Double(NSEC_PER_SEC))) // 1
-    dispatch_after(popTime, GlobalMainQueue) { // 2
+    let popTime = DispatchTime.now() + Double(Int64(delayInSeconds * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC) // 1
+    GlobalMainQueue.asyncAfter(deadline: popTime) { // 2
       let count = PhotoManager.sharedManager.photos.count
       if count > 0 {
         self.navigationItem.prompt = nil
@@ -233,9 +232,9 @@ private extension PhotoCollectionViewController {
       error in
       // This completion block currently executes at the wrong time
       let message = error?.localizedDescription ?? "The images have finished downloading"
-      let alert = UIAlertController(title: "Download Complete", message: message, preferredStyle: .Alert)
-      alert.addAction(UIAlertAction(title: "OK", style: .Cancel, handler: nil))
-      self.presentViewController(alert, animated: true, completion: nil)
+      let alert = UIAlertController(title: "Download Complete", message: message, preferredStyle: .alert)
+      alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+      self.present(alert, animated: true, completion: nil)
     }
   }
 }
