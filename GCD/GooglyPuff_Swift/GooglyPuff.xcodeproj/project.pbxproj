@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		20B1298F1DBF8E5C000015F5 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 20B1298E1DBF8E5C000015F5 /* Launch Screen.storyboard */; };
 		8EC95CC619994D7C00DE657C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED8114B1994272700B75856 /* Utils.swift */; };
 		8EC95CC719994D8A00DE657C /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEAB31A1992680F00A92801 /* Photo.swift */; };
 		8EC95CC819994D8E00DE657C /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEAB3171992675A00A92801 /* PhotoManager.swift */; };
@@ -46,6 +47,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		20B1298E1DBF8E5C000015F5 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "../Launch Screen.storyboard"; sourceTree = "<group>"; };
 		8ED8114B1994272700B75856 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		8EEAB2C819925A4A00A92801 /* GooglyPuff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GooglyPuff.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EEAB2CC19925A4A00A92801 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 		8EEAB2CB19925A4A00A92801 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				20B1298E1DBF8E5C000015F5 /* Launch Screen.storyboard */,
 				8EEAB2EC19925DCD00A92801 /* ELCImagePicker */,
 				8EEAB2CC19925A4A00A92801 /* Info.plist */,
 				8EEAB31319925E6600A92801 /* Profiling.h */,
@@ -316,6 +319,7 @@
 			files = (
 				8EEAB30719925DCD00A92801 /* Overlay.png in Resources */,
 				8EEAB30419925DCD00A92801 /* ELCAlbumPickerController.xib in Resources */,
+				20B1298F1DBF8E5C000015F5 /* Launch Screen.storyboard in Resources */,
 				8EEAB30519925DCD00A92801 /* ELCAssetPicker.xib in Resources */,
 				8EEAB30619925DCD00A92801 /* ELCAssetTablePicker.xib in Resources */,
 				8EEAB3241994024500A92801 /* Main.storyboard in Resources */,
@@ -462,7 +466,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = GooglyPuff/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -476,7 +479,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = GooglyPuff/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
