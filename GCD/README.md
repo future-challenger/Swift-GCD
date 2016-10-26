@@ -1,6 +1,35 @@
 ##GCD in Swfit 3.0
 This project is "forked" from [raywenderlich GCD tutorial] (https://www.raywenderlich.com/60749/grand-central-dispatch-in-depth-part-1). It's really a good tutorial where I learned what I wanted. But it's kinda out of date. In Swift 3.0, lots of API in iOS SDK have been modified. Including how GCD APIs are called. So I update the tutorial to swift 3.0
 
+###Create a Queue
+
+####Concurrent Queue
+before:
+```swift
+let concurrentQueue = dispatch_queue_create("com.swift3.imageQueue", DISPATCH_QUEUE_CONCURRENT)
+```
+
+swift 3.0
+```swift
+let concurrentQueue = DispatchQueue(label: "com.swift3.imageQueue", attributes: .concurrent)
+concurrentQueue.async {
+  print("async task")
+}  
+```
+####Serial Queue
+before:
+```swift
+let concurrentQueue = dispatch_queue_create("com.swift3.imageQueue", DISPATCH_QUEUE_SERIAL)
+```
+
+swift 3.0
+```swift
+let concurrentQueue = DispatchQueue(label: "com.swift3.imageQueue")
+concurrentQueue.sync {
+  print("sync task")
+}  
+```
+
 ###Main Queue
 `dispatch_get_main_queue` => `DispatchQueue.main`
 
