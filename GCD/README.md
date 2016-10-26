@@ -1,3 +1,7 @@
+```
+Part 2 will be updated to Swift 3.0 soon!
+```
+
 ##GCD in Swfit 3.0
 This project is "forked" from [raywenderlich GCD tutorial] (https://www.raywenderlich.com/60749/grand-central-dispatch-in-depth-part-1). It's really a good tutorial where I learned what I wanted. But it's kinda out of date. In Swift 3.0, lots of API in iOS SDK have been modified. Including how GCD APIs are called. So I update the tutorial to swift 3.0
 
