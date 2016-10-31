@@ -19,18 +19,8 @@ class PhotoCollectionViewController: UICollectionViewController {
   fileprivate var addedContentObserver: NSObjectProtocol!
 
   #if DEBUG
-  private static var signalSource: DispatchSourceSignal?
-//  private var signalOnceToken = dispatch_once_t()
-  private static let signalOnce: Void = {
-    let queue = DispatchQueue.main;
-    PhotoCollectionViewController.signalSource = DispatchSource.makeSignalSource(signal: 0, queue: queue);
-    if let source = PhotoCollectionViewController.signalSource {
-      source.setEventHandler{
-        print("Hi, I am: \()")
-      }
-    }
-    
-  }()
+  private var signalSource: DispatchSourceSignal?
+  private static let ONCE_TRACKER: String = "com.gcd.thtorial.once"
   #endif
 
   // MARK: - Lifecycle
@@ -38,22 +28,18 @@ class PhotoCollectionViewController: UICollectionViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-//    #if DEBUG // 1
-//    dispatch_once(&signalOnceToken) { // 2
-//      let queue = dispatch_get_main_queue()
-//      self.signalSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_SIGNAL,
-//        UInt(SIGSTOP), 0, queue) // 3
-//      if let source = self.signalSource { // 4
-//        dispatch_source_set_event_handler(source) { // 5
-//          NSLog("Hi, I am: \(self.description)")
-//        }
-//        dispatch_resume(source) // 6
-//      }
-      
-    
-      
-//    }
-//    #endif
+    #if DEBUG // 1      
+      DispatchQueue.once{ // 2
+        let queue = DispatchQueue.main
+        self.signalSource = DispatchSource.makeSignalSource(signal: 0, queue: queue) // 3
+        if let source = self.signalSource { // 4
+          source.setEventHandler(handler: { // 5
+            print("Hi, I am: \(self.description)")
+          })
+          source.resume() // 6
+        }
+      }
+    #endif
 
     library = ALAssetsLibrary()
 

@@ -33,12 +33,13 @@ var GlobalBackgroundQueue: DispatchQueue {
   return DispatchQueue.global(qos: .background)
 }
 
-class Utils {
-  class var defaultBackgroundColor: UIColor {
+class Utils: NSObject {
+  @objc class var defaultBackgroundColor: UIColor {
     return UIColor(red: 236.0/255.0, green: 254.0/255.0, blue: 255.0/255.0, alpha: 1.0)
   }
 
-  class var userInterfaceIdiomIsPad: Bool {
+  @objc class var userInterfaceIdiomIsPad: Bool {
     return UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad
   }
 }
+

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		20C2753B1DC7010500DCDE47 /* ExDispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C2753A1DC7010500DCDE47 /* ExDispatchQueue.swift */; };
+		20C2753D1DC7219700DCDE47 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 20C2753C1DC7219700DCDE47 /* Launch Screen.storyboard */; };
 		8EC95CC619994D7C00DE657C /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED8114B1994272700B75856 /* Utils.swift */; };
 		8EC95CC719994D8A00DE657C /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEAB31A1992680F00A92801 /* Photo.swift */; };
 		8EC95CC819994D8E00DE657C /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEAB3171992675A00A92801 /* PhotoManager.swift */; };
@@ -46,6 +48,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		20C2753A1DC7010500DCDE47 /* ExDispatchQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExDispatchQueue.swift; sourceTree = "<group>"; };
+		20C2753C1DC7219700DCDE47 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		8ED8114B1994272700B75856 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		8EEAB2C819925A4A00A92801 /* GooglyPuff.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GooglyPuff.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8EEAB2CC19925A4A00A92801 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -149,6 +153,8 @@
 				8EEAB31419925E6600A92801 /* Profiling.m */,
 				8EEAB30919925E2A00A92801 /* UIImage Categories */,
 				8ED8114B1994272700B75856 /* Utils.swift */,
+				20C2753A1DC7010500DCDE47 /* ExDispatchQueue.swift */,
+				20C2753C1DC7219700DCDE47 /* Launch Screen.storyboard */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -316,6 +322,7 @@
 			files = (
 				8EEAB30719925DCD00A92801 /* Overlay.png in Resources */,
 				8EEAB30419925DCD00A92801 /* ELCAlbumPickerController.xib in Resources */,
+				20C2753D1DC7219700DCDE47 /* Launch Screen.storyboard in Resources */,
 				8EEAB30519925DCD00A92801 /* ELCAssetPicker.xib in Resources */,
 				8EEAB30619925DCD00A92801 /* ELCAssetTablePicker.xib in Resources */,
 				8EEAB3241994024500A92801 /* Main.storyboard in Resources */,
@@ -340,6 +347,7 @@
 			files = (
 				8EEAB31B1992680F00A92801 /* Photo.swift in Sources */,
 				8EEAB2FF19925DCD00A92801 /* ELCAlbumPickerController.m in Sources */,
+				20C2753B1DC7010500DCDE47 /* ExDispatchQueue.swift in Sources */,
 				8EEAB31D199291FB00A92801 /* PhotoDetailViewController.swift in Sources */,
 				8EEAB31019925E4A00A92801 /* UIImage+Alpha.m in Sources */,
 				8EEAB31519925E6600A92801 /* Profiling.m in Sources */,
@@ -470,7 +478,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = GooglyPuff/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.raywenderlich.$(PRODUCT_NAME:rfc1034identifier)";
@@ -485,7 +492,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = GooglyPuff/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.raywenderlich.$(PRODUCT_NAME:rfc1034identifier)";
