@@ -144,6 +144,110 @@ class MyClass {
 }
 ```
 
+#### Dispatch Once Is Still Needed
+Global var or static property can not meet our needs when we just need some code run once in app. And this code has a reference to `self`. Static property makes this not possible. Let's checkout some other ways to use "*dispatch onde*" in Swift 3.0.
+It fits *Singleton* very well, but not the run-once thing.
+
+The first one:
+```swift
+public extension DispatchQueue {
+    private static var _onceTracker = [String]()
+
+    /**
+     Executes a block of code, associated with a unique token, only once.  The code is thread safe and will
+     only execute the code once even in the presence of multithreaded calls.
+
+     - parameter token: A unique reverse DNS style name such as com.vectorform.<name> or a GUID
+     - parameter block: Block to execute once
+     */
+    public class func once(token: String, block:@noescape(Void)->Void) {
+        objc_sync_enter(self); defer { objc_sync_exit(self) }
+
+        if _onceTracker.contains(token) {
+            return
+        }
+
+        _onceTracker.append(token)
+        block()
+    }
+}
+```
+
+How to use the `once` function:
+```swift
+DispatchQueue.once(token: "com.vectorform.test") {
+    print( "Do This Once!" )
+}
+```
+or:
+```swift
+private let _onceToken = NSUUID().uuidString
+
+DispatchQueue.once(token: _onceToken) {
+    print( "Do This Once!" )
+}
+```
+**NOTE**: You have to use your own **tracker** to prevent your code run more than once.
+
+Let's make some improvement:
+```swift
+public extension DispatchQueue {
+    private static var _onceTracker = [String]()
+
+    public class func once(file: String = #file, function: String = #function, line: Int = #line, block:(Void)->Void) {
+        let token = file + ":" + function + ":" + String(line)
+        once(token: token, block: block)
+    }
+
+    /**
+     Executes a block of code, associated with a unique token, only once.  The code is thread safe and will
+     only execute the code once even in the presence of multithreaded calls.
+
+     - parameter token: A unique reverse DNS style name such as com.vectorform.<name> or a GUID
+     - parameter block: Block to execute once
+     */
+    public class func once(token: String, block:(Void)->Void) {
+        objc_sync_enter(self)
+        defer { objc_sync_exit(self) }
+
+
+        if _onceTracker.contains(token) {
+            return
+        }
+
+        _onceTracker.append(token)
+        block()
+    }
+}
+```
+How to use it:
+```swift
+DispatchQueue.once {
+    setupUI()
+}
+```
+or:
+```swift
+DispatchQueue.once(token: "com.me.project") {
+    setupUI()
+}
+```
+You can use a string *tracker*, you also can use the default *tracker*.
+
+But there's another way. You can define another name for *dispatch_once* in an ObjC file, and use it in swift 3.0 with the "Bridege Header" imported.
+```objective-c
+// in header
+typedef dispatch_once_t mxcl_dispatch_once_t;
+void mxcl_dispatch_once(mxcl_dispatch_once_t *predicate, dispatch_block_t block);
+
+// in source file
+void mxcl_dispatch_once(mxcl_dispatch_once_t *predicate, dispatch_block_t block) {
+    dispatch_once(predicate, block);
+}
+```
+You can use `mxcl_dispatch_once` in swift.
+
+
 reference: <br />
 http://stackoverflow.com/questions/37801407/whither-dispatch-once-in-swift-3
 http://stackoverflow.com/questions/37801436/how-do-i-write-dispatch-after-gcd-in-swift-3
