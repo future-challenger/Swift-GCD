@@ -147,3 +147,4 @@ class MyClass {
 reference: \n
 http://stackoverflow.com/questions/37801407/whither-dispatch-once-in-swift-3
 http://stackoverflow.com/questions/37801436/how-do-i-write-dispatch-after-gcd-in-swift-3
+http://stackoverflow.com/questions/37886994/dispatch-once-in-swift-3

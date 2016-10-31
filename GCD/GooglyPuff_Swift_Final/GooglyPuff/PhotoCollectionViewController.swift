@@ -11,8 +11,7 @@ import UIKit
 private let CellImageViewTag = 3
 private let BackgroundImageOpacity: CGFloat = 0.1
 
-class PhotoCollectionViewController: UICollectionViewController
-{
+class PhotoCollectionViewController: UICollectionViewController {
   var library: ALAssetsLibrary!
   fileprivate var popController: UIPopoverController!
 
@@ -20,8 +19,18 @@ class PhotoCollectionViewController: UICollectionViewController
   fileprivate var addedContentObserver: NSObjectProtocol!
 
   #if DEBUG
-  private var signalSource: DispatchSourceSignal!
+  private static var signalSource: DispatchSourceSignal?
 //  private var signalOnceToken = dispatch_once_t()
+  private static let signalOnce: Void = {
+    let queue = DispatchQueue.main;
+    PhotoCollectionViewController.signalSource = DispatchSource.makeSignalSource(signal: 0, queue: queue);
+    if let source = PhotoCollectionViewController.signalSource {
+      source.setEventHandler{
+        print("Hi, I am: \()")
+      }
+    }
+    
+  }()
   #endif
 
   // MARK: - Lifecycle
@@ -29,8 +38,8 @@ class PhotoCollectionViewController: UICollectionViewController
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    #if DEBUG // 1
-    dispatch_once(&signalOnceToken) { // 2
+//    #if DEBUG // 1
+//    dispatch_once(&signalOnceToken) { // 2
 //      let queue = dispatch_get_main_queue()
 //      self.signalSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_SIGNAL,
 //        UInt(SIGSTOP), 0, queue) // 3
@@ -41,11 +50,10 @@ class PhotoCollectionViewController: UICollectionViewController
 //        dispatch_resume(source) // 6
 //      }
       
-      let queue = DispatchQueue.main;
-      self.signalSource = DispatchSource.makeSignalSource(signal: 0, queue: queue);
+    
       
-    }
-    #endif
+//    }
+//    #endif
 
     library = ALAssetsLibrary()
 
