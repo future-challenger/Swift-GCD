@@ -51,25 +51,23 @@ class PhotoManager {
                      SuccessKidURLString,
                      LotsOfFacesURLString]
     addresses += addresses + addresses // 1
-    var blocks: [()->()] = [] // 2
+    var blocks: [DispatchWorkItem] = [] // 2
 
     for i in 0 ..< addresses.count {
       downloadGroup.enter()
-//      let block = dispatch_block_create(DISPATCH_BLOCK_INHERIT_QOS_CLASS) { // 3
-//        let index = Int(i)
-//        let address = addresses[index]
-//        let url = URL(string: address)
-//        let photo = DownloadPhoto(url: url!) {
-//          image, error in
-//          if let error = error {
-//            storedError = error
-//          }
-//          downloadGroup.leave()
-//        }
-//        PhotoManager.sharedManager.addPhoto(photo)
-//      }
-      
-      let block = DispatchWorkItem(qos: .in, flags: <#T##DispatchWorkItemFlags#>, block: <#T##() -> ()#>)
+      let block = DispatchWorkItem{
+        let index = Int(i)
+        let address = addresses[index]
+        let url = URL(string: address)
+        let photo = DownloadPhoto(url: url!) {
+          image, error in
+          if let error = error {
+            storedError = error
+          }
+          downloadGroup.leave()
+        }
+        PhotoManager.sharedManager.addPhoto(photo)
+      }
       
       blocks.append(block)
       GlobalMainQueue.async(execute: block) // 4
@@ -78,7 +76,7 @@ class PhotoManager {
     for block in blocks[3 ..< blocks.count] { // 5
       let cancel = arc4random_uniform(2) // 6
       if cancel == 1 {
-        DispatchWorkItem.cancel(block) // 7
+        block.cancel()  // 7
         downloadGroup.leave() // 8
       }
     }
