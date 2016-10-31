@@ -290,6 +290,103 @@ Swift 3.0
 
 ```
 
+###Dispatch Group
+
+How to create one:
+```swift 
+var downloadGroup = dispatch_group_create()
+```
+
+Swift 3.0
+```swift 
+let downloadGroup = DispatchGroup()
+```
+
+Sometimes we want to start a new queue when tasks running in other background queues all finished. Dispatch group help us with that. There're two ways to achieve this.
+1. `dispatch_group_wait` => `DispatchGroup#wati`
+2. `dispatch_group_notify` => `DispatchGroup#notify`
+
+Let's see how they work.
+
+You want dispatch group wait work, there're other tow methods you have to know: `dispatch_group_enter`, `dispatch_group_leave`. The *enter* method manually notify the group that a task has started. The *leave* method has to be called the same time as the *enter* method has called. Or you app may crash.
+####Dispatch Group Wait
+```swift 
+// some unrelevant code is removed.
+  @IBAction func groupWaitAction(_ sender: AnyObject) {
+    let concurrentQueue = DispatchQueue(label: "com.gcd.demo.concurrent", attributes: .concurrent)
+    concurrentQueue.async {
+      let taskGroup = DispatchGroup()
+      for i in 0..<100 {
+        taskGroup.enter()
+        
+        print("###task \(i) \n")
+        Thread.sleep(forTimeInterval: 0.5)
+        
+        taskGroup.leave()
+      }
+      
+      taskGroup.wait()
+      
+      DispatchQueue.main.async {
+        print("It's on main queue now")
+      }
+    }
+  }
+```
+**First of all, dispatch group in this example is run in a concurrent queue**. I did not notice this in the beginning. And you should notice that the *wait* method would block all thread. If any of the tasks takes a lot of time, things will be bad. Fortunally, dispatch group can wait with a timeout parameter. If the time expires before all tasks are done, it will return a non-zero value. With dispatch group wait, you have to dispatch to another queue (mostly the main queue) manually.
+
+####Dispatch Group notify
+```swift
+  @IBAction func groupWaitAction(_ sender: AnyObject) {
+    let concurrentQueue = DispatchQueue(label: "com.gcd.demo.concurrent", attributes: .concurrent)
+    concurrentQueue.async {
+      let taskGroup = DispatchGroup()
+      for i in 0..<100 {
+        taskGroup.enter()
+        
+        print("###task \(i) \n")
+        Thread.sleep(forTimeInterval: 0.5)
+        
+        taskGroup.leave()
+      }
+          
+      taskGroup.notify(queue: DispatchQueue.main, work: DispatchWorkItem(block: {
+        print("It's on main queue now")
+      }))
+    }
+  }
+```
+The best way to use `DispatchGroup` is to send a group in a concurrent queue then *wait* or *notifiy*. @hen all things are done, dispatch to *Main* queue to update UI.
+
+###Dispatch Apply
+Before Swift 3.0, there's a very good method to handle iterations. It's `dispatch_apply`. This method ia a sync method, not return until all tasks in its loop are done. But tasks in the method to iterate are executed concurrently. Now in swift 3.0, it got a new name: `DispatchQueue.concurrentPerform`.
+
+It's always a good option to use `DispatchQueue.concurrentPerform` in a concurrent queue but not a good one in a serial queue.
+
+But how to use `DispatchQueue.concurrentPerform` to improve the Dispatch Group Wait code? Let's give it a shot.
+
+```swift
+  @IBAction func dispatchApplyAction(_ sender: AnyObject) {
+    let concurrentQueue = DispatchQueue(label: "com.apply.gcd", attributes: .concurrent)
+    let taskGroup = DispatchGroup()
+    
+    concurrentQueue.async {
+      DispatchQueue.concurrentPerform(iterations: 50, execute: {index in
+        taskGroup.enter()
+        print(">>>task \(index) \n")
+        Thread.sleep(forTimeInterval: 0.5)
+        taskGroup.leave()
+      })
+      
+      taskGroup.notify(queue: DispatchQueue.main, work: DispatchWorkItem(block: {
+        print(">>>It's on main queue now")
+      }))
+    }
+  }
+```
+Run `DispatchQueue.concurrentPerform` code in a background thread, this will not block the main thread while tasks are running. When all work is done, DispatchGroup wil use `notify` to update the UI thread.
+
+
 reference: <br />
 http://stackoverflow.com/questions/37801407/whither-dispatch-once-in-swift-3
 http://stackoverflow.com/questions/37801436/how-do-i-write-dispatch-after-gcd-in-swift-3
