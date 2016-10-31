@@ -1,7 +1,3 @@
-```
-Part 2 will be updated to Swift 3.0 soon!
-```
-
 ##GCD in Swfit 3.0
 This project is "forked" from [raywenderlich GCD tutorial] (https://www.raywenderlich.com/60749/grand-central-dispatch-in-depth-part-1). It's really a good tutorial where I learned what I wanted. But it's kinda out of date. In Swift 3.0, lots of API in iOS SDK have been modified. Including how GCD APIs are called. So I update the tutorial to swift 3.0
 
@@ -247,6 +243,31 @@ void mxcl_dispatch_once(mxcl_dispatch_once_t *predicate, dispatch_block_t block)
 ```
 You can use `mxcl_dispatch_once` in swift.
 
+###Create Source &
+before:
+```swift
+    let queue = dispatch_get_main_queue()
+    self.signalSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_SIGNAL,
+                                               UInt(SIGSTOP), 0, queue) // 3
+    if let source = self.signalSource { // 4
+      dispatch_source_set_event_handler(source) { // 5
+        NSLog("Hi, I am: \(self.description)")
+      }
+      dispatch_resume(source) // 6
+    }
+```
+
+Swift 3.0:
+```swift
+    let queue = DispatchQueue.main
+    self.signalSource = DispatchSource.makeSignalSource(signal: 0, queue: queue) // 3
+    if let source = self.signalSource { // 4
+        source.setEventHandler(handler: { // 5
+        print("Hi, I am: \(self.description)")
+        })
+        source.resume() // 6
+    }
+```
 
 reference: <br />
 http://stackoverflow.com/questions/37801407/whither-dispatch-once-in-swift-3
