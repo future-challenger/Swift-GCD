@@ -243,7 +243,7 @@ void mxcl_dispatch_once(mxcl_dispatch_once_t *predicate, dispatch_block_t block)
 ```
 You can use `mxcl_dispatch_once` in swift.
 
-###Create Source &
+###Create Dispatch Source
 before:
 ```swift
     let queue = dispatch_get_main_queue()
@@ -267,6 +267,27 @@ Swift 3.0:
         })
         source.resume() // 6
     }
+```
+
+###Dispatch Barrier
+When you add things in a multithreaded enviroment, you have to prevent more than one thread try to add things in the same time. You can use *Barrier* to do this.
+
+before:
+```swift
+  dispatch_barrier_async(currentQueue) { // NOTE: barrier, requires exclusive access for write
+    //...
+  }
+```
+
+Swift 3.0
+```swift 
+    concurrentPhotoQueue.async(flags: .barrier, execute: { // 1
+        self._photos.append(photo) // 2
+        GlobalMainQueue.async { // 3
+        self.postContentAddedNotification()
+        }
+    }) 
+
 ```
 
 reference: <br />
