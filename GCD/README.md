@@ -12,6 +12,22 @@ before:
         // things to do in this block
       }
 ```
+swift 3.0
+```swift
+      let block = DispatchWorkItem{
+        let index = Int(i)
+        let address = addresses[index]
+        let url = URL(string: address)
+        let photo = DownloadPhoto(url: url!) {
+          image, error in
+          if let error = error {
+            storedError = error
+          }
+          downloadGroup.leave()
+        }
+        PhotoManager.sharedManager.addPhoto(photo)
+      }
+```
 
 ###Create a Queue
 
