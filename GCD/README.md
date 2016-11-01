@@ -387,6 +387,25 @@ But how to use `DispatchQueue.concurrentPerform` to improve the Dispatch Group W
 Run `DispatchQueue.concurrentPerform` code in a background thread, this will not block the main thread while tasks are running. When all work is done, DispatchGroup wil use `notify` to update the UI thread.
 
 
+###Semaphore
+
+```swift 
+  @IBAction func semaphoreAction(_ sender: AnyObject) {
+    let semaphore = DispatchSemaphore(value: 0)
+    
+    Thread.sleep(forTimeInterval: 1);
+    semaphore.signal()
+    
+    
+    let returnVal = semaphore.wait(timeout: DispatchTime(uptimeNanoseconds: 800000000))
+    if (returnVal == .timedOut) {
+      print("%%%Semaphore timeout")
+    }
+  }
+```
+Here's how to create one, how to single it and wait until semaphore is available.
+
+
 reference: <br />
 http://stackoverflow.com/questions/37801407/whither-dispatch-once-in-swift-3
 http://stackoverflow.com/questions/37801436/how-do-i-write-dispatch-after-gcd-in-swift-3
