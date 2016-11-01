@@ -1,5 +1,5 @@
 ##GCD in Swfit 3.0
-This project is "forked" from [raywenderlich GCD tutorial] (https://www.raywenderlich.com/60749/grand-central-dispatch-in-depth-part-1). It's really a good tutorial where I learned what I wanted. But it's kinda out of date. In Swift 3.0, lots of API in iOS SDK have been modified. Including how GCD APIs are called. So I update the tutorial to swift 3.0
+This project is "forked" from [raywenderlich GCD tutorial][1]. It's really a good tutorial where I learned what I wanted. But it's kinda out of date. In Swift 3.0, lots of API in iOS SDK have been modified. Including how GCD APIs are called. So I update the tutorial to swift 3.0
 
 ###Create a block
 before:
@@ -410,3 +410,6 @@ reference: <br />
 http://stackoverflow.com/questions/37801407/whither-dispatch-once-in-swift-3
 http://stackoverflow.com/questions/37801436/how-do-i-write-dispatch-after-gcd-in-swift-3
 http://stackoverflow.com/questions/37886994/dispatch-once-in-swift-3
+
+
+    [1]:https://www.raywenderlich.com/60749/grand-central-dispatch-in-depth-part-1
