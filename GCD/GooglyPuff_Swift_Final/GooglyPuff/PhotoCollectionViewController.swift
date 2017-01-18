@@ -34,7 +34,7 @@ class PhotoCollectionViewController: UICollectionViewController {
     #if DEBUG // 1      
       DispatchQueue.once{ // 2
         let queue = DispatchQueue.main
-        self.signalSource = DispatchSource.makeSignalSource(signal: 0, queue: queue) // 3
+        self.signalSource = DispatchSource.makeSignalSource(signal: SIGSTOP, queue: queue) // 3
         if let source = self.signalSource { // 4
           source.setEventHandler(handler: { // 5
             print("Hi, I am: \(self.description)")
