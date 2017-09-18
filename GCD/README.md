@@ -1,7 +1,7 @@
-##GCD in Swfit 3.0
+## GCD in Swfit 3.0
 This project is "forked" from [raywenderlich GCD tutorial][1]. It's really a good tutorial where I learned what I wanted. But it's kinda out of date. In Swift 3.0, lots of API in iOS SDK have been modified. Including how GCD APIs are called. So I update the tutorial to swift 3.0
 
-###Create a block
+### Create a block
 before:
 ```swift
       let block = dispatch_block_create(DISPATCH_BLOCK_INHERIT_QOS_CLASS) { // 3
@@ -25,9 +25,9 @@ swift 3.0
       }
 ```
 
-###Create a Queue
+### Create a Queue
 
-####Concurrent Queue
+#### Concurrent Queue
 before:
 ```swift
 let concurrentQueue = dispatch_queue_create("com.swift3.imageQueue", DISPATCH_QUEUE_CONCURRENT)
@@ -40,7 +40,7 @@ concurrentQueue.async {
   print("async task")
 }  
 ```
-####Serial Queue
+#### Serial Queue
 before:
 ```swift
 let concurrentQueue = dispatch_queue_create("com.swift3.imageQueue", DISPATCH_QUEUE_SERIAL)
@@ -54,10 +54,10 @@ concurrentQueue.sync {
 }  
 ```
 
-###Main Queue
+### Main Queue
 `dispatch_get_main_queue` => `DispatchQueue.main`
 
-###Global Queue
+### Global Queue
 `dispatch_get_global_queue` => `DispatchQueue.global(qos:)`
 before:
 ```Swfit
@@ -87,8 +87,8 @@ DispatchQueue.global(qos: .userInitiated).async {
 }
 ```
 
-###Dispatch After & Once
-####Dispatch After
+### Dispatch After & Once
+#### Dispatch After
 before you do dispatch after like this:
 ```swift
 var dispatchTime: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
@@ -110,7 +110,7 @@ DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
 }
 ```
 
-####Disaptch Once
+#### Disaptch Once
 This `dispatch_once` on longer exists in Swift 3.0.
 
 According to Apple's migration guide:
@@ -243,7 +243,7 @@ void mxcl_dispatch_once(mxcl_dispatch_once_t *predicate, dispatch_block_t block)
 ```
 You can use `mxcl_dispatch_once` in swift.
 
-###Create Dispatch Source
+### Create Dispatch Source
 before:
 ```swift
     let queue = dispatch_get_main_queue()
@@ -269,7 +269,7 @@ Swift 3.0:
     }
 ```
 
-###Dispatch Barrier
+### Dispatch Barrier
 When you add things in a multithreaded enviroment, you have to prevent more than one thread try to add things in the same time. You can use *Barrier* to do this.
 
 before:
@@ -290,7 +290,7 @@ Swift 3.0
 
 ```
 
-###Dispatch Group
+### Dispatch Group
 
 How to create one:
 ```swift 
@@ -309,7 +309,7 @@ Sometimes we want to start a new queue when tasks running in other background qu
 Let's see how they work.
 
 You want dispatch group wait work, there're other tow methods you have to know: `dispatch_group_enter`, `dispatch_group_leave`. The *enter* method manually notify the group that a task has started. The *leave* method has to be called the same time as the *enter* method has called. Or you app may crash.
-####Dispatch Group Wait
+#### Dispatch Group Wait
 ```swift 
 // some unrelevant code is removed.
   @IBAction func groupWaitAction(_ sender: AnyObject) {
@@ -335,7 +335,7 @@ You want dispatch group wait work, there're other tow methods you have to know: 
 ```
 **First of all, dispatch group in this example is run in a concurrent queue**. I did not notice this in the beginning. And you should notice that the *wait* method would block all thread. If any of the tasks takes a lot of time, things will be bad. Fortunally, dispatch group can wait with a timeout parameter. If the time expires before all tasks are done, it will return a non-zero value. With dispatch group wait, you have to dispatch to another queue (mostly the main queue) manually.
 
-####Dispatch Group notify
+#### Dispatch Group notify
 ```swift
   @IBAction func groupWaitAction(_ sender: AnyObject) {
     let concurrentQueue = DispatchQueue(label: "com.gcd.demo.concurrent", attributes: .concurrent)
@@ -358,7 +358,7 @@ You want dispatch group wait work, there're other tow methods you have to know: 
 ```
 The best way to use `DispatchGroup` is to send a group in a concurrent queue then *wait* or *notifiy*. @hen all things are done, dispatch to *Main* queue to update UI.
 
-###Dispatch Apply
+### Dispatch Apply
 Before Swift 3.0, there's a very good method to handle iterations. It's `dispatch_apply`. This method ia a sync method, not return until all tasks in its loop are done. But tasks in the method to iterate are executed concurrently. Now in swift 3.0, it got a new name: `DispatchQueue.concurrentPerform`.
 
 It's always a good option to use `DispatchQueue.concurrentPerform` in a concurrent queue but not a good one in a serial queue.
@@ -387,7 +387,7 @@ But how to use `DispatchQueue.concurrentPerform` to improve the Dispatch Group W
 Run `DispatchQueue.concurrentPerform` code in a background thread, this will not block the main thread while tasks are running. When all work is done, DispatchGroup wil use `notify` to update the UI thread.
 
 
-###Semaphore
+### Semaphore
 
 ```swift 
   @IBAction func semaphoreAction(_ sender: AnyObject) {
