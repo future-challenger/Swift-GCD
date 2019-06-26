@@ -37,7 +37,7 @@
     [super viewDidLoad];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
 	[self.tableView setAllowsSelection:NO];
-    [self.view setBackgroundColor:[Utils defaultBackgroundColor]];
+    [self.view setBackgroundColor:Utils.defaultBackgroundColor];
     NSMutableArray *tempArray = [[NSMutableArray alloc] init];
     self.elcAssets = tempArray;
 	

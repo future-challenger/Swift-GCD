@@ -26,7 +26,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-  self.view.backgroundColor = [Utils defaultBackgroundColor];
+  self.view.backgroundColor = Utils.defaultBackgroundColor;//[Utils defaultBackgroundColor];
 	[self.navigationItem setTitle:@"Select an Album"];
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self.parent action:@selector(cancelImagePicker)];
 	[self.navigationItem setRightBarButtonItem:cancelButton];
@@ -116,7 +116,7 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    cell.backgroundColor = [Utils defaultBackgroundColor];
+  cell.backgroundColor = Utils.defaultBackgroundColor; //[Utils defaultBackgroundColor];
 }
 
 // Customize the appearance of table view cells.
