@@ -1,5 +1,5 @@
-## GCD in Swfit 3.0
-This project is "forked" from [raywenderlich GCD tutorial][1]. It's really a good tutorial where I learned what I wanted. But it's kinda out of date. In Swift 3.0, lots of API in iOS SDK have been modified. Including how GCD APIs are called. So I update the tutorial to swift 3.0
+## GCD in Swfit 5.0
+This project is "forked" from [raywenderlich GCD tutorial][1]. It's really a good tutorial where I learned what I wanted. But it's kinda out of date. In swift 5.0, lots of API in iOS SDK have been modified. Including how GCD APIs are called. So I update the tutorial to swift 5.0
 
 ### Create a block
 before:
@@ -8,7 +8,7 @@ before:
         // things to do in this block
       }
 ```
-swift 3.0
+Swift 5.0
 ```swift
       let block = DispatchWorkItem{
         let index = Int(i)
@@ -33,7 +33,7 @@ before:
 let concurrentQueue = dispatch_queue_create("com.swift3.imageQueue", DISPATCH_QUEUE_CONCURRENT)
 ```
 
-swift 3.0
+Swift 5.0
 ```swift
 let concurrentQueue = DispatchQueue(label: "com.swift3.imageQueue", attributes: .concurrent)
 concurrentQueue.async {
@@ -46,7 +46,7 @@ before:
 let concurrentQueue = dispatch_queue_create("com.swift3.imageQueue", DISPATCH_QUEUE_SERIAL)
 ```
 
-swift 3.0
+Swift 5.0
 ```swift
 let concurrentQueue = DispatchQueue(label: "com.swift3.imageQueue")
 concurrentQueue.sync {
@@ -63,7 +63,7 @@ before:
 ```Swfit
 dispatch_get_global_queue(Int(QOS_CLASS_USER_INTERACTIVE.value), 0)
 ```
-Swift 3.0
+Swift 5.0
 ```Swift
 DispatchQueue.global(qos: .userInteractive)
 ```
@@ -77,7 +77,7 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
     });
 });
 ```
-In swift 3.0, we do it this way.
+In swift 5.0, we do it this way.
 ```swift
 DispatchQueue.global(qos: .userInitiated).async {
     // background things
@@ -96,7 +96,7 @@ dispatch_after(dispatchTime, dispatch_get_main_queue(), {
     // your function here
 })
 ```
-In swift 3.0
+In swift 5.0
 ```swift
 let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(0.1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
 DispatchQueue.main.asyncAfter(deadline: dispatchTime, execute: {
@@ -111,7 +111,7 @@ DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
 ```
 
 #### Disaptch Once
-This `dispatch_once` on longer exists in Swift 3.0.
+This `dispatch_once` on longer exists in swift 5.0.
 
 According to Apple's migration guide:
 ```
@@ -141,7 +141,7 @@ class MyClass {
 ```
 
 #### Dispatch Once Is Still Needed
-Global var or static property can not meet our needs when we just need some code run once in app. And this code has a reference to `self`. Static property makes this not possible. Let's checkout some other ways to use "*dispatch onde*" in Swift 3.0.
+Global var or static property can not meet our needs when we just need some code run once in app. And this code has a reference to `self`. Static property makes this not possible. Let's checkout some other ways to use "*dispatch onde*" in swift 5.0.
 It fits *Singleton* very well, but not the run-once thing.
 
 The first one:
@@ -230,7 +230,7 @@ DispatchQueue.once(token: "com.me.project") {
 ```
 You can use a string *tracker*, you also can use the default *tracker*.
 
-But there's another way. You can define another name for *dispatch_once* in an ObjC file, and use it in swift 3.0 with the "Bridege Header" imported.
+But there's another way. You can define another name for *dispatch_once* in an ObjC file, and use it in swift 5.0 with the "Bridege Header" imported.
 ```objective-c
 // in header
 typedef dispatch_once_t mxcl_dispatch_once_t;
@@ -257,7 +257,7 @@ before:
     }
 ```
 
-Swift 3.0:
+Swift 5.0:
 ```swift
     let queue = DispatchQueue.main
     self.signalSource = DispatchSource.makeSignalSource(signal: 0, queue: queue) // 3
@@ -279,7 +279,7 @@ before:
   }
 ```
 
-Swift 3.0
+Swift 5.0
 ```swift 
     concurrentPhotoQueue.async(flags: .barrier, execute: { // 1
         self._photos.append(photo) // 2
@@ -297,7 +297,7 @@ How to create one:
 var downloadGroup = dispatch_group_create()
 ```
 
-Swift 3.0
+Swift 5.0
 ```swift 
 let downloadGroup = DispatchGroup()
 ```
@@ -359,7 +359,7 @@ You want dispatch group wait work, there're other tow methods you have to know: 
 The best way to use `DispatchGroup` is to send a group in a concurrent queue then *wait* or *notifiy*. @hen all things are done, dispatch to *Main* queue to update UI.
 
 ### Dispatch Apply
-Before Swift 3.0, there's a very good method to handle iterations. It's `dispatch_apply`. This method ia a sync method, not return until all tasks in its loop are done. But tasks in the method to iterate are executed concurrently. Now in swift 3.0, it got a new name: `DispatchQueue.concurrentPerform`.
+Before swift 5.0, there's a very good method to handle iterations. It's `dispatch_apply`. This method ia a sync method, not return until all tasks in its loop are done. But tasks in the method to iterate are executed concurrently. Now in swift 5.0, it got a new name: `DispatchQueue.concurrentPerform`.
 
 It's always a good option to use `DispatchQueue.concurrentPerform` in a concurrent queue but not a good one in a serial queue.
 
