@@ -52,7 +52,7 @@ private extension PhotoDetailViewController {
 
     // Get features from the image
     let newImage = CIImage(cgImage: image.cgImage!)
-    let features = detector?.features(in: newImage) as! [CIFaceFeature]!
+    let features = detector?.features(in: newImage) as! [CIFaceFeature]?
 
     UIGraphicsBeginImageContext(image.size)
     let imageRect = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
@@ -138,7 +138,7 @@ private extension PhotoDetailViewController {
   func fadeInNewImage(_ newImage: UIImage) {
     let tmpImageView = UIImageView(image: newImage)
     tmpImageView.autoresizingMask
-      = [UIViewAutoresizing.flexibleWidth, UIViewAutoresizing.flexibleHeight]
+      = [UIView.AutoresizingMask.flexibleWidth, UIView.AutoresizingMask.flexibleHeight]
     tmpImageView.contentMode = photoImageView.contentMode
     tmpImageView.frame = photoImageView.bounds
     tmpImageView.alpha = 0.0

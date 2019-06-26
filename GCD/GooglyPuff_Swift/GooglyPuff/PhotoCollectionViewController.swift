@@ -128,7 +128,7 @@ extension PhotoCollectionViewController {
 extension PhotoCollectionViewController: ELCImagePickerControllerDelegate {
   public func elcImagePickerController(_ picker: ELCImagePickerController!, didFinishPickingMediaWithInfo info: [Any]!) {
     for dictionary in info as! [NSDictionary] {
-      library.asset(for: dictionary[UIImagePickerControllerReferenceURL] as! URL, resultBlock: {
+      library.asset(for: dictionary[UIImagePickerController.InfoKey.referenceURL] as! URL, resultBlock: {
         asset in
         let photo = AssetPhoto(asset: asset!)
         PhotoManager.sharedManager.addPhoto(photo)
